@@ -40,8 +40,35 @@ app.get('/user/:id', (req, res) => {
   })
 })
 
-app.get('/exam/', (req, res) => {
-  db.query('SELECT * FROM exam', (error, result) => {
+app.put('/course/exam', (req, res) => {
+  const values = [req.body.user, req.body.course]
+  const text = `
+    SELECT exam.id AS id, exam.name AS name
+    FROM appuser 
+    LEFT JOIN appuser_course ON appuser_course.id_appuser = appuser.id
+    LEFT JOIN course ON course.id = appuser_course.id_course
+    LEFT JOIN course_exam ON course_exam.id_course = course.id
+    LEFT JOIN exam ON exam.id = course_exam.id_exam
+    WHERE appuser.id = $1 AND course.id = $2
+  `
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.send(result.rows)
+  })
+})
+
+app.get('/exam/:id', (req, res) => {
+  const text = `
+    SELECT exam.id AS id, exam.name AS name
+    FROM appuser
+    LEFT JOIN exam ON exam.id_appuser = appuser.id 
+    LEFT JOIN course_exam ON course_exam.id_exam = exam.id
+    LEFT JOIN course ON course.id = course_exam.id_course
+    WHERE appuser.id = $1
+  `
+  db.query(text, [req.params.id], (error, result) => {
     if (error) {
       throw error
     }
@@ -58,8 +85,33 @@ app.get('/exam/:id', (req, res) => {
   })
 })
 
+
+app.get('/course/:id', (req, res) => {
+  const text = `
+    SELECT course.id AS id, course.name AS name
+    FROM appuser 
+    LEFT JOIN appuser_course ON appuser_course.id_appuser = appuser.id
+    LEFT JOIN course ON course.id = appuser_course.id_course
+    WHERE appuser.id = $1
+  `
+  db.query(text, [req.params.id], (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.send(result.rows)
+  })
+})
+
+
 app.get('/user/:id/exam', (req, res) => {
-  db.query('SELECT exam.name FROM appuser LEFT JOIN exam ON appuser.id = exam.id_appuser WHERE appuser.id = $1', [req.params.id], (error, result) => {
+  const text = `
+    SELECT exam.name 
+    FROM appuser 
+    LEFT JOIN exam ON appuser.id = exam.id_appuser 
+    WHERE appuser.id = $1
+  `
+
+  db.query(text, [req.params.id], (error, result) => {
     if (error) {
       throw error
     }
@@ -73,7 +125,8 @@ app.get('/exam/:id/question', (req, res) => {
     FROM exam
     LEFT JOIN question ON question.id_exam = exam.id
     WHERE exam.id = $1
-    ORDER BY question.id`
+    ORDER BY question.id
+  `
   db.query(text, [req.params.id], (error, result) => {
     if (error) {
       throw error
@@ -92,7 +145,8 @@ app.get('/exam/:id/choice', (req, res) => {
     LEFT JOIN question ON question.id_exam = exam.id
     LEFT JOIN choice ON choice.id_question = question.id
     WHERE exam.id = $1
-    ORDER BY choice.id`
+    ORDER BY choice.id
+  `
   db.query(text, [req.params.id], (error, result) => {
     if (error) {
       throw error

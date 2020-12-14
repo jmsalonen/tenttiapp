@@ -9,10 +9,10 @@ const Header = () => (
       <Button component={Link} to="/" style={{ color: "white" }}> 
         Koti
       </Button> 
-      <Button component={Link} to="/exam" style={{ color: "white" }}> 
-        Tentit
+      <Button component={Link} to="/course" style={{ color: "white" }}> 
+        Kurssit
       </Button> 
-      <Button component={Link} to="/users" style={{ color: "white" }}> 
+      <Button component={Link} to="/login" style={{ color: "white" }}> 
         Kirjaudu
       </Button> 
     </Toolbar>

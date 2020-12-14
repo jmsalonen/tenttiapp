@@ -8,146 +8,26 @@ import {
   useParams
 } from "react-router-dom";
 
-const Question = () => {
-  useRouteMatch()
-  const { examid } = useParams()
+import QuestionEdit from './QuestionEdit.js'
+import QuestionUser from './QuestionUser.js'
 
-  const [question, setQuestion] = useState([]) 
-  const [choice, setChoice] = useState([]) 
-  const [refresh, setRefresh] = useState(false)
+const Question = ({userid, courseid, examid}) => {
+  const [userType, setUserType] = useState("")
 
-  const getQuestion = async () => {
+  const getUser = async () => {
     await axios
-      .get(`http://localhost:3001/exam/${examid}/question`)
+      .get(`http://localhost:3001/user/${userid}`)
       .then(response => {
-        setQuestion(response.data)
-    })
+        setUserType(response.data[0].usertype)
+      })
   }
 
-  const getChoice = async () => {
-    await axios
-      .get(`http://localhost:3001/exam/${examid}/choice`)
-      .then(response => {
-        setChoice(response.data)
-    })
-  }
+  useEffect(() => { 
+    console.log("examid: ", examid)
+    getUser()
+  }, [])  
 
-  const deleteQuestion = async (id) => {
-    await axios
-      .delete(`http://localhost:3001/delete/question/${id}`)
-      .then(response => {
-        console.log("question deleted")
-    })
-    setRefresh(!refresh)
-  }
-
-  const deleteChoice = async (id) => {
-    await axios
-      .delete(`http://localhost:3001/delete/choice/${id}`)
-      .then(response => {
-        console.log("choice deleted")
-    })
-    setRefresh(!refresh)
-  }
-
-  const postChoice = async (id) => {
-    await axios
-      .post(`http://localhost:3001/add/choice/${id}`)
-      .then(response => {
-        console.log("choice added")
-    })
-    setRefresh(!refresh)
-  }
-
-  const postQuestion = async () => {
-    await axios
-      .post(`http://localhost:3001/add/question/${examid}`)
-      .then(response => {
-        console.log("question added")
-    })
-    setRefresh(!refresh)
-  }
-
-  const putQuestion = async (id, value) => {
-    const data = {
-      id: id,
-      name: value
-    }
-    await axios
-      .put(`http://localhost:3001/update/question/`, data)
-      .then(response => {
-        console.log("question updated")
-    }) 
-    setRefresh(!refresh)
-  }
-
-  const putChoice = async (id, value) => {
-    const data = {
-      id: id,
-      name: value
-    }
-    await axios
-      .put(`http://localhost:3001/update/choice/`, data)
-      .then(response => {
-        console.log("question updated")
-    }) 
-    setRefresh(!refresh)
-  }
-
-  const putCorrectChoice = async (id, value) => {
-    const data = {
-      id: id,
-      correct: value
-    }
-    await axios
-      .put(`http://localhost:3001/update/correct/`, data)
-      .then(response => {
-        console.log("choice updated")
-    }) 
-    setRefresh(!refresh)
-  }
-
-  useEffect(() => {
-    getQuestion()
-    getChoice()
-  }, [refresh, examid])
-
-  return (
-    <>
-      {question.map(q => 
-        <Card key={uuid()} className="kortti"> 
-          <div className="sulkuNappi">
-            <Button onClick={() => deleteQuestion(q.id)} color="secondary" >×</Button>
-          </div>
-          <TextField 
-            defaultValue={q.question}
-            style = { {width: '90%'} }
-            onBlur={ (e) => putQuestion(q.id, e.target.value) } 
-          />
-          {choice.filter(filtered => (filtered.questionid === q.id && filtered.id !== null)).map(c => 
-            <div key={uuid()}>
-              <Checkbox
-                key={uuid()} 
-                checked={c.correct}
-                style={{ color: green[500] }}
-                id={uuid()}
-                name={q.question + " " + q.id} 
-                onChange={ (e) => putCorrectChoice(c.id, e.target.checked) } 
-              />
-              <TextField 
-                defaultValue={c.choice}
-                style={ {width: '50%'} } 
-                onBlur={ (e) => putChoice(c.id, e.target.value) } 
-              />
-              <Button onClick={() => deleteChoice(c.id)} color="secondary" >×</Button>
-            </div>
-          )}
-          <Button onClick={() => postChoice(q.id)} color="primary" >+</Button>
-        </Card>
-      )}
-      <><Button onClick={postQuestion} color="primary" >Uusi Kysymys</Button></>
-    </>
-  )
+  return (userType === 'teacher' ? <QuestionEdit examid={examid} /> : <QuestionUser examid={examid} />)
 } 
 
 export default Question

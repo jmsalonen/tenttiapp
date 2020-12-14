@@ -19,42 +19,28 @@ const Users = ({ chooseUser }) => {
   }
 
   const postUser = async () => {
-    await axios
-      .post(`http://localhost:3001/add/user/${newUserName}/${newUserType}`)
-      .then(response => {
-        console.log("user added")
-    })
+    const data = {
+      name: newUserName,
+      usertype: newUserType
+    }
+    await axios.post(`http://localhost:3001/add/user/`, data)
     setRefresh(!refresh)
   }
 
   const deleteUser = async (id) => {
-    await axios
-      .delete(`http://localhost:3001/delete/user/${id}`)
-      .then(response => {
-        console.log("choice deleted")
-    })
+    await axios.delete(`http://localhost:3001/delete/user/${id}`)
     setRefresh(!refresh)
   }
 
   useEffect(() => {    
     getUsers()
   }, [refresh])
-
-  const addUserBody = () => {
-    const data = {
-      name: newUserName,
-      usertype: newUserType
-    }
-    axios.post(`http://localhost:3001/add/user/`, data).then(response => {
-      console.log("user added")
-    })
-  }
   
   return (
     <div className="Tenttilista">
       <Card className="kortti">
         {users.map(item => <div key={uuid()}>
-          <Link to="/" onClick={() => chooseUser(item.id)}>{item.name}</Link>
+          <Link to="/course" onClick={() => chooseUser(item.id)}>{item.name}</Link>
           <Button onClick={() => deleteUser(item.id)}> × </Button>
         </div>)}
         <TextField label={'nimi'} onChange={(e) => setNewUserName(e.target.value)} />
