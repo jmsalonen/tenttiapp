@@ -70,7 +70,7 @@ const QuestionEdit = ({examid}) => {
     setRefresh(!refresh)
   }
 
-  const putCorrectChoice = async (id, value) => {
+  const putCorrect = async (id, value) => {
     const data = {
       id: id,
       correct: value
@@ -93,7 +93,7 @@ const QuestionEdit = ({examid}) => {
           </div>
           <TextField 
             defaultValue={q.question}
-            style = { {width: '90%'} }
+            style={ {width: '90%'} }
             onBlur={ (e) => putQuestion(q.id, e.target.value) } 
           />
           {choice.filter(filtered => (filtered.questionid === q.id && filtered.id !== null)).map(c => 
@@ -104,7 +104,7 @@ const QuestionEdit = ({examid}) => {
                 style={{ color: green[500] }}
                 id={uuid()}
                 name={q.question + " " + q.id} 
-                onChange={ (e) => putCorrectChoice(c.id, e.target.checked) } 
+                onChange={ (e) => putCorrect(c.id, e.target.checked) } 
               />
               <TextField 
                 defaultValue={c.choice}

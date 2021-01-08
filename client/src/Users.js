@@ -1,29 +1,48 @@
 import { useEffect, useState } from 'react'
 import uuid from 'react-uuid'
 import { Button, TextField, Card } from '@material-ui/core'
-import { Link } from "react-router-dom";
 import axios from 'axios'
 
-const Users = ({ chooseUser }) => {
+const Users = ({ tokenSet }) => {
   const [users, setUsers] = useState([])
-  const [newUserName, setNewUserName] = useState()
-  const [newUserType, setNewUserType] = useState()
+  const [userName, setUserName] = useState()
+  const [userEmail, setUserEmail] = useState()
+  const [userPassword, setUserPassword] = useState()
+  const [userType, setUserType] = useState()
   const [refresh, setRefresh] = useState(false)
 
   const getUsers = async () => {
     await axios
-      .get('http://localhost:3001/user/')
+      .get('http://localhost:3001/users/')
       .then(response => {
         setUsers(response.data)
     })
   }
 
-  const postUser = async () => {
+  const logIn = async () => {
     const data = {
-      name: newUserName,
-      usertype: newUserType
+      email: userEmail,
+      password: userPassword
     }
-    await axios.post(`http://localhost:3001/add/user/`, data)
+    await axios
+      .post(`http://localhost:3001/login`, data)
+      .then(response => {
+        tokenSet(response.data.token)
+        /* console.log(localStorage.getItem('token')) */
+      })
+      .catch(() => {
+        console.log('Log in Error')
+      })
+  }
+
+  const register = async () => {
+    const data = {
+      name: userName,
+      email: userEmail,
+      password: userPassword,
+      usertype: userType
+    }
+    await axios.post(`http://localhost:3001/register`, data)
     setRefresh(!refresh)
   }
 
@@ -35,17 +54,20 @@ const Users = ({ chooseUser }) => {
   useEffect(() => {    
     getUsers()
   }, [refresh])
-  
+
   return (
     <div className="Tenttilista">
       <Card className="kortti">
         {users.map(item => <div key={uuid()}>
-          <Link to="/course" onClick={() => chooseUser(item.id)}>{item.name}</Link>
+          {item.name}
           <Button onClick={() => deleteUser(item.id)}> × </Button>
         </div>)}
-        <TextField label={'nimi'} onChange={(e) => setNewUserName(e.target.value)} />
-        <TextField label={'tyyppi'} onChange={(e) => setNewUserType(e.target.value)} /> <br /> 
-        <Button onClick={postUser}>Lisää</Button>
+        <TextField label={'name'} onChange={(e) => setUserName(e.target.value)} />
+        <TextField label={'email'} onChange={(e) => setUserEmail(e.target.value)} />
+        <TextField label={'password'} onChange={(e) => setUserPassword(e.target.value)} /> 
+        <TextField label={'usertype'} onChange={(e) => setUserType(e.target.value)} /> <br /> 
+        <Button onClick={register}>Luo Tili</Button>
+        <Button onClick={logIn}>Kirjaudu Sisään</Button>
       </Card>
     </div>
   )

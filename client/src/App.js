@@ -3,70 +3,92 @@ import { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Redirect,
-  Link
+  Route
 } from "react-router-dom";
 import axios from 'axios'
-import uuid from 'react-uuid'
 
+//import Users from './Users.js'
 import Header from './Header.js'
-import Users from './Users.js'
 import Exam from './Exam.js'
-import { Card } from '@material-ui/core';
+import LogIn from './LogIn.js'
+import Home from './Home.js'
+import Register from './Register.js'
+import Course from './Course.js'
 
-const Home = ({id, chooseCourse}) => {
-  const [course, setCourse] = useState([])
+const App = () => {
+  const [token, setToken] = useState()
+  const [isLogged, setIsLogged] = useState(false)
+  const [profile, setProfile] = useState()
 
-  const getCourse = async () => {
+  const getProfile = async () => {
     axios
-      .get(`http://localhost:3001/course/${id}`)
+      .get(`http://localhost:3001/user/profile`, {
+        headers: {
+          'authorization': `${token}`
+        }
+      })
       .then(response => {
-        setCourse(response.data)
+        setProfile(response.data)
     })
   }
 
+  const logIn = async (userEmail, userPassword) => {
+    const data = {
+      email: userEmail,
+      password: userPassword
+    }
+    await axios
+      .post(`http://localhost:3001/login`, data)
+      .then(response => {
+        setToken(response.data.token)
+        localStorage.setItem('token', response.data.token)
+      })
+      .catch(() => {
+        console.log('Log in Error')
+      })
+  }
+
+  const logOut = async () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('course')
+    localStorage.removeItem('exam')
+    setToken(null)
+    setProfile(null)
+    setIsLogged(false)
+    /* console.log(localStorage.getItem('token')) */
+  }
+
   useEffect(() => {
-    if (id !== 0)
-      getCourse()
-  }, [])
+    setToken(localStorage.getItem('token'))
+    
+    if (token === null) {
+      setIsLogged(false)
+    }
+    else
+      setIsLogged(true)
 
-  if (id === 0) 
-    return <>{""}</>
-  
-  return (
-    <div className="Tenttilista">
-      <Card className="kortti">
-        {course.map(item => <div key={uuid()}><Link to="/course/exam" onClick={() => chooseCourse(item.id)}>{item.name}</Link></div>)}
-      </Card>
-    </div>
-  )
-}
+    if (isLogged)
+      getProfile()
+  }, [token])
 
-const App = () => {
-  const [userId, setUserId] = useState(0)
-  const [courseId, setCourseId] = useState(0)
-
-  const chooseUser = (user) => {
-    setUserId(user)
-  }
-
-  const chooseCourse = (course) => {
-    setCourseId(course)
-  }
-
+  /* if (!profile)
+    return <></>
+ */
   return (
     <Router>
-      <Header />
+      <Header token={token} logOut={logOut} />
       <Switch>
-        <Route path="/course/exam">
-          <Exam userid={userId} courseid={courseId} />
+        <Route path="/exam">
+          <Exam token={token} profile={profile} />
         </Route>
-        <Route path="/login">
-          <Users chooseUser={chooseUser} />
+        <Route path="/register">
+          <Register />
         </Route>
         <Route path="/course">
-          <Home id={userId} chooseCourse={chooseCourse} />
+          <Course token={token} />
+        </Route>
+        <Route path="/">
+          {isLogged ? <Home token={token} profile={profile} /> : <LogIn logIn={logIn} />}
         </Route>
       </Switch>
     </Router>

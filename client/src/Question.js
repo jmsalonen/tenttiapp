@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react'
-import uuid from 'react-uuid'
-import { Button, Card, TextField, Checkbox } from '@material-ui/core'
-import { green } from '@material-ui/core/colors'
 import axios from 'axios'
-import {
-  useRouteMatch,
-  useParams
-} from "react-router-dom";
 
 import QuestionEdit from './QuestionEdit.js'
 import QuestionUser from './QuestionUser.js'
 
-const Question = ({userid, courseid, examid}) => {
+const Question = ({ userid, courseid, examid }) => {
   const [userType, setUserType] = useState("")
 
   const getUser = async () => {
@@ -27,7 +20,11 @@ const Question = ({userid, courseid, examid}) => {
     getUser()
   }, [])  
 
-  return (userType === 'teacher' ? <QuestionEdit examid={examid} /> : <QuestionUser examid={examid} />)
-} 
+  return (
+    userType === 'teacher' 
+    ? <QuestionEdit examid={examid} userid={userid} /> 
+    : <QuestionUser examid={examid} userid={userid} />
+  )
+}
 
 export default Question

@@ -3,18 +3,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Button } from '@material-ui/core'
 import { Link } from "react-router-dom";
 
-const Header = () => (
+const Header = ({ token, logOut }) => (
   <AppBar position="static">
     <Toolbar>
       <Button component={Link} to="/" style={{ color: "white" }}> 
-        Koti
+        { token ? "Koti" : "Kirjaudu" }
       </Button> 
-      <Button component={Link} to="/course" style={{ color: "white" }}> 
-        Kurssit
-      </Button> 
-      <Button component={Link} to="/login" style={{ color: "white" }}> 
-        Kirjaudu
-      </Button> 
+      {token ? <Button component={Link} to="/course" style={{ color: "white" }}>Kurssit</Button> : "" }
+      {token ? "" : <Button component={Link} to="/register" style={{ color: "white" }}>Rekisteröidy</Button> }
+      {token ? <Button onClick={logOut} style={{ color: "white" }}>Kirjaudu Ulos</Button> : "" } 
     </Toolbar>
   </AppBar>
 )
