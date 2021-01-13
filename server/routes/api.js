@@ -5,23 +5,14 @@ const db = require('../db')
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
-  res.send('Hello')
-})
 
-router.put('/user/profile', (req, res) => {
+
+router.put('/mycourse/', (req, res) => {
   const text = `
-    SELECT appuser.name AS name, exam.name AS exam, question.name AS question, choice.name AS choice, exam_appuser_choice.answer AS answer, choice.correct AS correct
-    FROM appuser 
-    LEFT JOIN appuser_course ON appuser_course.id_appuser = appuser.id
-    LEFT JOIN course ON course.id = appuser_course.id_course
-    LEFT JOIN course_exam ON course_exam.id_course = course.id
-    LEFT JOIN exam ON exam.id = course_exam.id_exam
-    LEFT JOIN question ON question.id_exam = exam.id
-    LEFT JOIN choice ON choice.id_question = question.id
-    LEFT JOIN exam_appuser_choice ON exam_appuser_choice.id_choice = choice.id AND exam_appuser_choice.id_appuser = appuser.id
-    WHERE appuser.id = $1
-    ORDER BY question.id, choice.id
+    SELECT course.id AS id, course.name AS name
+    FROM course
+    LEFT JOIN appuser_course ON appuser_course.id_course = course.id
+    WHERE appuser_course.id_appuser = $1
   `
   const values = [req.body.id]
   db.query(text, values, (error, result) => {
@@ -32,8 +23,19 @@ router.put('/user/profile', (req, res) => {
   })
 })
 
-router.get('/user/:id', (req, res) => {
-  db.query('SELECT * FROM appuser WHERE id = $1', [req.params.id], (error, result) => {
+router.put('/othercourse/', (req, res) => {
+  const text = `
+    SELECT * 
+    FROM course
+    LEFT JOIN appuser_course ON appuser_course.id_course = course.id
+    WHERE course.id NOT IN (
+      SELECT course.id
+      FROM course
+      LEFT JOIN appuser_course ON appuser_course.id_course = course.id
+      WHERE appuser_course.id_appuser = $1)
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
     if (error) {
       throw error
     }
@@ -41,8 +43,13 @@ router.get('/user/:id', (req, res) => {
   })
 })
 
-router.get('/users/', (req, res) => {
-  db.query('SELECT * FROM appuser', (error, result) => {
+router.put('/course/', (req, res) => {
+  const text = `
+    SELECT *
+    FROM course
+  `
+  //const values = [req.body.id]
+  db.query(text, (error, result) => {
     if (error) {
       throw error
     }
@@ -50,6 +57,71 @@ router.get('/users/', (req, res) => {
   })
 })
 
+router.put('/newcourse/', (req, res) => {
+  let text = `
+    INSERT INTO course VALUES (DEFAULT, $1) RETURNING id
+  `
+  let values = [req.body.name]
+  let newCourseId = 0
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    newCourseId = result.rows[0].id
+    text = `
+      INSERT INTO appuser_course VALUES ($1, $2) RETURNING *
+    `
+    values = [req.body.id, newCourseId] 
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      console.log(result.rows)
+    })
+  })
+})
+
+router.put('/deletecourse/', (req, res) => {
+  const text = `
+    DELETE FROM course 
+    WHERE id = $1
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).send(`Course deleted with ID: ${req.body.id}`)
+  })
+})
+
+router.put('/joincourse/', (req, res) => {
+  const text = `
+    INSERT INTO appuser_course VALUES ($1, $2)
+  `
+  const values = [req.body.userid, req.body.courseid]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+  })
+})
+
+router.put('/leavecourse/', (req, res) => {
+  const text = `
+    DELETE FROM appuser_course 
+    WHERE id_appuser = $1 AND id_course = $2
+  `
+  const values = [req.body.userid, req.body.courseid]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+  })
+})
+
+
+// --- 
 
 router.put('/course/exam', (req, res) => {
   const values = [req.body.user, req.body.course]
@@ -96,7 +168,6 @@ router.get('/exam/:id', (req, res) => {
   })
 })
 
-
 router.get('/course/:id', (req, res) => {
   const text = `
     SELECT course.id AS id, course.name AS name
@@ -113,21 +184,6 @@ router.get('/course/:id', (req, res) => {
   })
 })
 
-
-router.get('/user/:id/exam', (req, res) => {
-  const text = `
-    SELECT exam.name 
-    FROM appuser 
-    LEFT JOIN exam ON appuser.id = exam.id_appuser 
-    WHERE appuser.id = $1
-  `
-  db.query(text, [req.params.id], (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.send(result.rows)
-  })
-})
 
 router.get('/exam/:id/question', (req, res) => {
   const text = `
@@ -182,35 +238,6 @@ router.get('/exam/:exam/answer/:user', (req, res) => {
   })
 })
 
-router.post('/add/user/:name/:type', (req, res) => {
-  const { name, type } = req.params
-  db.query('INSERT INTO appuser VALUES (DEFAULT, $1, $2)', [name, type], (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`User added with ID: ${result.insertId}`)
-  })
-})
-
-router.post('/add/user/', (req, res) => {
-  db.query('INSERT INTO appuser VALUES (DEFAULT, $1, $2)', [req.body.name, req.body.usertype], (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`User added with ID: ${result.insertId}`)
-  })
-})
-
-router.delete('/delete/user/:id/', (req, res) => {
-  let id = parseInt(req.params.id)
-
-  db.query('DELETE FROM appuser WHERE id = $1', [id], (error, results) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).send(`User deleted with ID: ${id}`)
-  })
-})
 
 router.delete('/delete/question/:id/', (req, res) => {
   let id = parseInt(req.params.id)
@@ -313,22 +340,5 @@ router.put('/update/answer/', (req, res) => {
     res.status(201).send(`Correct answer changed to ID: ${result.insertId}`)
   })
 })
-
-router.put('/finished/', (req, res) => {
-  const text = `
-    UPDATE exam_appuser_choice 
-    SET finished = true
-    WHERE id_exam = $1 AND id_appuser = $2;  
-  `
-  const values = [req.body.exam, req.body.user]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`Correct answer changed to ID: ${result.insertId}`)
-  })
-})
-
-
 
 module.exports = router

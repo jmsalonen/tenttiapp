@@ -7,8 +7,10 @@ const passport = require('passport')
 const app = express()
 
 require('./passport/passport')
-const routes = require('./routes/routes')
+//const routes = require('./routes/routes')
 const userRoutes = require('./routes/user-routes')
+const api = require('./routes/api')
+const user = require('./routes/user')
 const auth = require('./routes/authentication')
 const corsOptions = {
   origin: 'http://localhost:3000'
@@ -17,6 +19,9 @@ const corsOptions = {
 app.use(cors(corsOptions)) 
 app.use(bodyParser.json()) 
 app.use('/', auth)
+app.use('/', api)
+app.use('/', user)
+//app.use('/', routes)
 app.use('/user', passport.authenticate('jwt', { session: false }), userRoutes)
 
 const PORT = 3001

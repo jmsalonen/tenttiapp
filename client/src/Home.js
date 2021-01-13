@@ -49,9 +49,10 @@ const Home = ({ token, profile }) => {
     console.log('picked', courseId)
   }
 
-  if (myProfile === undefined)
+  if (!myProfile)
     return <></>
-
+  if (!myProfile.id)
+    return <></>
   return (
     <div className="Tenttilista">
       <Card className="kortti">

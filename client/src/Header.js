@@ -11,7 +11,7 @@ const Header = ({ token, logOut }) => (
       </Button> 
       {token ? <Button component={Link} to="/course" style={{ color: "white" }}>Kurssit</Button> : "" }
       {token ? "" : <Button component={Link} to="/register" style={{ color: "white" }}>Rekisteröidy</Button> }
-      {token ? <Button onClick={logOut} style={{ color: "white" }}>Kirjaudu Ulos</Button> : "" } 
+      {token ? <Button onClick={logOut} component={Link} to="/" style={{ color: "white" }}>Kirjaudu Ulos</Button> : "" } 
     </Toolbar>
   </AppBar>
 )

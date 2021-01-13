@@ -8,7 +8,8 @@ import {
   useParams
 } from "react-router-dom";
 
-const QuestionEdit = ({examid}) => {
+const QuestionEdit = ({ examid }) => {
+
   useRouteMatch()
   //const { examid } = useParams()
 
@@ -84,6 +85,10 @@ const QuestionEdit = ({examid}) => {
     getChoice()
   }, [refresh, examid])
 
+  console.log('question length: ', question.length)
+  if (question.length < 1) {
+    return <></>
+  }
   return (
     <>
       {question.map(q => 
@@ -119,7 +124,7 @@ const QuestionEdit = ({examid}) => {
       )}
       <><Button onClick={postQuestion} color="primary" >Uusi Kysymys</Button></>
     </>
-  )
+  )  
 } 
 
 export default QuestionEdit

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const db = require('../db')
 
 const router = express.Router()
-
+/*
 router.put('/mycourse/', (req, res) => {
   const text = `
     SELECT course.id AS id, course.name AS name
@@ -146,7 +146,96 @@ router.put('/exam/', (req, res) => {
   })
 })
 
+router.put('/exam/', (req, res) => {
+  const values = [req.body.user, req.body.course]
+  const text = `
+    SELECT exam.id AS id, exam.name AS name
+    FROM appuser 
+    LEFT JOIN appuser_course ON appuser_course.id_appuser = appuser.id
+    LEFT JOIN course ON course.id = appuser_course.id_course
+    LEFT JOIN course_exam ON course_exam.id_course = course.id
+    LEFT JOIN exam ON exam.id = course_exam.id_exam
+    WHERE appuser.id = $1 AND course.id = $2
+  `
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.send(result.rows)
+  })
+})
+
+router.put('/course/exam/', (req, res) => {
+  const values = [req.body.user, req.body.course]
+  const text = `
+    SELECT exam.id AS id, exam.name AS name
+    FROM appuser 
+    LEFT JOIN appuser_course ON appuser_course.id_appuser = appuser.id
+    LEFT JOIN course ON course.id = appuser_course.id_course
+    LEFT JOIN course_exam ON course_exam.id_course = course.id
+    LEFT JOIN exam ON exam.id = course_exam.id_exam
+    WHERE appuser.id = $1 AND course.id = $2
+  `
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.send(result.rows)
+  })
+})
+
+router.get('/exam/:id/question', (req, res) => {
+  try {
+    const text = `
+      SELECT question.id AS id, question.name AS question
+      FROM exam
+      LEFT JOIN question ON question.id_exam = exam.id
+      WHERE exam.id = $1
+      ORDER BY question.id
+    `
+    db.query(text, [req.params.id], (error, result) => {
+      if (error) {
+        throw error
+      }
+//      if (result.rows[0].id === null)
+//        res.send([])  
+//      else
+        res.send(result.rows)
+    })
+  }
+  catch (err) {
+    console.log(err)
+  }
+}) 
+
+router.get('/exam/:id/choice/', (req, res) => {
+  const text = `
+    SELECT choice.id AS id, question.id AS questionid, choice.name AS choice, choice.correct AS correct
+    FROM exam
+    LEFT JOIN question ON question.id_exam = exam.id
+    LEFT JOIN choice ON choice.id_question = question.id
+    WHERE exam.id = $1
+    ORDER BY choice.id
+  `
+  db.query(text, [req.params.id], (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.send(result.rows)
+  })
+})
+
+
+
+
+*/
+
+
 // ------ 
+
+
+
+
 
 router.post('/register', passport.authenticate('register', { session: false }), async (req, res, next) => {
   res.json({

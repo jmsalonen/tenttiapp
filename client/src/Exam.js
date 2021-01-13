@@ -13,10 +13,13 @@ import Question from './Question.js'
 
 //const Exam = ({userid, courseid}) => {
 const Exam = ({ token, profile }) => {
+  const { path, url } = useRouteMatch()
   const [myToken, setMyToken] = useState(token)
   const [myProfile, setMyProfile] = useState(profile)
-  const [exam, setExam] = useState([])
   const [courseId, setCourseId] = useState(localStorage.getItem('course'))
+  const [exam, setExam] = useState([])
+  const [examId, setExamId] = useState(localStorage.getItem('exam'))
+
 
   const getToken = async () => {
     setMyToken(localStorage.getItem('token'))
@@ -46,11 +49,6 @@ const Exam = ({ token, profile }) => {
     })
   }
 
-  const setId = async (id) => {
-    setCourseId(id)
-    localStorage.setExam('course', id)
-  }
-
   useEffect(() => {
     if (!token)
       getToken()
@@ -60,10 +58,39 @@ const Exam = ({ token, profile }) => {
       getExam()
   }, [myToken, myProfile])
 
-  if (myProfile === undefined) 
-    return <>.</>
+  useEffect(() => {
+    localStorage.setItem('exam', examId)
+    console.log('examjs examid', examId)
+  }, [examId])
 
-  return (<>{courseId}</>)
+  if (!myProfile) 
+    return <>.</>
+  return (
+    <div className="Tenttilista">
+      <div>
+        {exam.map((item, index) =>  
+          <Button
+            key={uuid()} 
+            component={Link} 
+            to={`${url}/${index+1}`}
+            onClick={() => (setExamId(item.id))}
+            color="primary">
+              {item.name}
+          </Button>)}
+        {myProfile.usertype === "teacher" ? <Button color="primary" > + </Button> : ""}
+      </div>
+      <Switch>
+        <Route exact path={path}>
+        </Route>
+        <Route path={`${path}/:examid`}> 
+        {/* <Route path={`${path}/question`}> */}
+          <Question token={myToken} profile={myProfile} examid={examId} />
+        </Route>
+      </Switch>
+      {myProfile.usertype === "teacher" ? <div className="sulkuNappi"><Button color="secondary" >Poista Tentti</Button> </div> : ""}
+    </div>
+  )
+  
 
 /*   const { path, url } = useRouteMatch()
   const [exam, setExam] = useState([])

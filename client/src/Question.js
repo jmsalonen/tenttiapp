@@ -4,26 +4,41 @@ import axios from 'axios'
 import QuestionEdit from './QuestionEdit.js'
 import QuestionUser from './QuestionUser.js'
 
-const Question = ({ userid, courseid, examid }) => {
-  const [userType, setUserType] = useState("")
+const Question = ({ token, profile, examid }) => {
+  const [myToken, setMyToken] = useState(token)
+  const [myProfile, setMyProfile] = useState(profile)
+  const [examId, setExamId] = useState(examid)
 
-  const getUser = async () => {
-    await axios
-      .get(`http://localhost:3001/user/${userid}`)
-      .then(response => {
-        setUserType(response.data[0].usertype)
-      })
+
+  const getToken = async () => {
+    setMyToken(localStorage.getItem('token'))
   }
 
-  useEffect(() => { 
-    console.log("examid: ", examid)
-    getUser()
-  }, [])  
+  const getProfile = async () => {
+    await axios
+      .get(`http://localhost:3001/user/profile`, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
+      .then(response => {
+        setMyProfile(response.data)
+    })
+  }
 
+  useEffect(() => {
+    if (!token)
+      getToken()
+    if (!profile)
+      getProfile()
+    if (!examId)
+      setExamId(localStorage.getItem('exam'))
+  }, [myToken, myProfile])
+  
   return (
-    userType === 'teacher' 
-    ? <QuestionEdit examid={examid} userid={userid} /> 
-    : <QuestionUser examid={examid} userid={userid} />
+    myProfile.usertype === 'teacher' 
+    ? <QuestionEdit examid={examId} /> 
+    : <QuestionUser examid={examId} userid={myProfile.id} />
   )
 }
 
