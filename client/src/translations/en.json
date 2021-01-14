@@ -1,0 +1,9 @@
+{
+  "header.home": "Home",
+  "header.courses": "Courses",
+  "header.logout": "Log out",
+  "header.login": "Log in",
+  "header.language": "Change language",
+  "header.register": "Register",
+  "footer.text": "Today is "
+}

@@ -1,0 +1,9 @@
+{
+  "header.home": "Koti",
+  "header.courses": "Kurssit",
+  "header.logout": "Poistu",
+  "header.login": "Kirjaudu",
+  "header.register": "Rekisteröidy",
+  "header.language": "Vaihda kieli",
+  "footer.text": "Tänään on "
+}
