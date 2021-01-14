@@ -4,7 +4,7 @@ This app uses PostgreSQL database
 
 ## Instructions
 
-Navigate to tenttiap/server/ and run: 
+Navigate to tenttiapp/server/ and run: 
 
 ### `npm start`
 
