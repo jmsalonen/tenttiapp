@@ -3,7 +3,7 @@
   "header.courses": "Courses",
   "header.logout": "Log out",
   "header.login": "Log in",
-  "header.language": "Change language",
   "header.register": "Register",
+  "header.language": "Change language",
   "footer.text": "Today is "
 }
