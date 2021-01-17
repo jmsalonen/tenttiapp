@@ -24,6 +24,63 @@ app.use('/', user)
 //app.use('/', routes)
 app.use('/user', passport.authenticate('jwt', { session: false }), userRoutes)
 
+
+
+// DROPZONE
+
+const _ = require('lodash');
+
+const fileUpload = require('express-fileupload')
+app.use(fileUpload({
+  createParentPath: true
+}))
+
+app.post('/upload-one', (req, res) => {
+  console.log(__dirname)
+  try {
+    if (!req.files) {
+      res.send({ 
+        status: false,
+        message: 'no file uploaded'
+      })
+    }
+    else {
+      let newFile = req.files.file
+      newFile.mv('./uploads/' + newFile.name)
+    }
+  }
+  catch (err) {
+    console.log(err)
+    res.status(500).send(err)
+  }
+})
+
+app.post('/upload-many', (req, res) => {
+  console.log(__dirname)
+  try {
+    if (!req.files) {
+      res.send({ 
+        status: false,
+        message: 'no file uploaded'
+      })
+    }
+    else {
+      _.forEach(_.keysIn(req.files.file), (key) => {
+        let uploadFile = req.files.file[key]
+        uploadFile.mv('./uploads/' + uploadFile.name)
+      })
+    } 
+  }
+  catch (err) {
+    console.log(err)
+    res.status(500).send(err)
+  }
+})
+
+
+//  /DROPZONE 
+
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

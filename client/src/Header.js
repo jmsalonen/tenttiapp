@@ -15,6 +15,7 @@ const Header = ({ token, logOut, changeLanguage }) => (
       {token ? "" : <Button component={Link} to="/register" style={{ color: "white" }}> <FormattedMessage id="header.register" /> </Button> }
       {token ? <Button onClick={logOut} component={Link} to="/" style={{ color: "white" }}> <FormattedMessage id="header.logout" /> </Button> : "" } 
       <Button onClick={changeLanguage}> <FormattedMessage id="header.language" /> </Button>
+      <Button component={Link} to="/dropzone" style={{ color: "white" }}> Dropzone </Button>
     </Toolbar>
   </AppBar>
 )

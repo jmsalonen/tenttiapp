@@ -15,6 +15,9 @@ import Home from './Home.js'
 import Register from './Register.js'
 import Course from './Course.js'
 import Footer from './Footer.js'
+import Dropzone from './Dropzone.js'
+
+
 
 import { IntlProvider } from "react-intl";
 import messages_fi from "./translations/fi.json";
@@ -30,10 +33,6 @@ const App = () => {
   const [isLogged, setIsLogged] = useState(false)
   const [profile, setProfile] = useState()
   const [language, setLanguage] = useState('fi')
-
-  useEffect(() => {
-    setLanguage(language)
-  }, [language])
 
   const changeLanguage = () => {
     language === 'en' ? setLanguage('fi') : setLanguage('en')
@@ -106,6 +105,9 @@ const App = () => {
           </Route>
           <Route path="/course">
             <Course token={token} />
+          </Route>
+          <Route path="/dropzone">
+            <Dropzone />
           </Route>
           <Route path="/">
             {isLogged ? <Home token={token} profile={profile} /> : <LogIn logIn={logIn} />}
