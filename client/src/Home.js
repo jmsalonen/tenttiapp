@@ -21,6 +21,7 @@ const Home = ({ token, profile }) => {
       })
       .then(response => {
         setMyProfile(response.data)
+        localStorage.setItem('profile', JSON.stringify(response.data))
     })
   }
 
@@ -36,9 +37,9 @@ const Home = ({ token, profile }) => {
   }
 
   useEffect(() => {
-    if (!token)
+    if (!myToken)
       getToken()
-    if (!profile)
+    if (!myProfile)
       getProfile()
     if (myProfile)
       getMyCourse()

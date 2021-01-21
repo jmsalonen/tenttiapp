@@ -28,7 +28,7 @@ router.put('/user/profile', (req, res) => {
       throw error
     }
     res.send(result.rows)
-  })
+  }) 
 })
 /*
 router.get('/user/:id', (req, res) => {

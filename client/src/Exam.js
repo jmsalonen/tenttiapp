@@ -8,10 +8,11 @@ import {
   Link,
   useRouteMatch,
 } from "react-router-dom";
+import { FormattedMessage } from 'react-intl'
 
 import Question from './Question.js'
 
-//const Exam = ({userid, courseid}) => {
+
 const Exam = ({ token, profile }) => {
   const { path, url } = useRouteMatch()
   const [myToken, setMyToken] = useState(token)
@@ -49,14 +50,23 @@ const Exam = ({ token, profile }) => {
     })
   }
 
+  const deleteExam = async () => {
+    const data = {
+      id: examId
+    }
+    await axios.put(`http://localhost:3001/deleteexam/`, data)
+  }
+
   useEffect(() => {
-    if (!token)
+    if (!myToken)
       getToken()
-    if (!profile)
+    if (!myProfile)
       getProfile()
     if (myProfile)
       getExam()
   }, [myToken, myProfile])
+
+
 
   useEffect(() => {
     localStorage.setItem('exam', examId)
@@ -70,7 +80,7 @@ const Exam = ({ token, profile }) => {
       <div>
         {exam.map((item, index) =>  
           <Button
-            key={uuid()} 
+            //key={uuid()} 
             component={Link} 
             to={`${url}/${index+1}`}
             onClick={() => (setExamId(item.id))}
@@ -87,7 +97,7 @@ const Exam = ({ token, profile }) => {
           <Question token={myToken} profile={myProfile} examid={examId} />
         </Route>
       </Switch>
-      {myProfile.usertype === "teacher" ? <div className="sulkuNappi"><Button color="secondary" >Poista Tentti</Button> </div> : ""}
+      {myProfile.usertype === "teacher" ? <div className="sulkuNappi"><Button onClick={deleteExam} color="secondary" > <FormattedMessage id="exam.remove" /> </Button> </div> : ""}
     </div>
   )
   

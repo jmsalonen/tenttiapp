@@ -19,7 +19,6 @@ const CourseEdit = ({ token, profile }) => {
       .then(response => {
         setMyCourse(response.data)
     })
-    setRefresh(!refresh)
   }
 
   const getOtherCourse = async () => {
@@ -31,7 +30,6 @@ const CourseEdit = ({ token, profile }) => {
       .then(response => {
         setOtherCourse(response.data)
     })
-    setRefresh(!refresh)
   }
 
   const newCourse = async () => {
@@ -51,6 +49,12 @@ const CourseEdit = ({ token, profile }) => {
     await axios.put(`http://localhost:3001/deletecourse`, data)
     setRefresh(!refresh)
   }
+
+  /* const getCourseData = async () => {
+    await getMyCourse()
+    await getOtherCourse()
+    setRefresh(!refresh)
+  } */
 
   useEffect(() => {
     getMyCourse()

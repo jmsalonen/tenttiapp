@@ -13,9 +13,10 @@ router.get('/profile', (req, res, next) => {
     if (error) {
       throw error
     }
-    res.send(result.rows[0])
+    //next()
+    return res.json(result.rows[0])
   })
-  /* res.json({
+/*   res.json({
     message: "Secure profile accessed!",
     user: req.user,
     token: req.query.secret_token

@@ -6,7 +6,8 @@ import axios from 'axios'
 import {
   useRouteMatch,
   useParams
-} from "react-router-dom";
+} from "react-router-dom"
+import { FormattedMessage } from 'react-intl'
 
 const QuestionEdit = ({ examid }) => {
 
@@ -43,8 +44,12 @@ const QuestionEdit = ({ examid }) => {
     setRefresh(!refresh)
   }
 
-  const postChoice = async (id) => {
-    await axios.post(`http://localhost:3001/add/choice/${id}`)
+  const addChoice = async (id) => {
+    const data = {
+      id: id,
+      examid: examid
+    } 
+    await axios.put(`http://localhost:3001/edit/add/choice/`, data)
     setRefresh(!refresh)
   }
 
@@ -56,43 +61,47 @@ const QuestionEdit = ({ examid }) => {
   const putQuestion = async (id, value) => {
     const data = {
       id: id,
-      name: value
+      name: value,
+      examid: examid
     }
-    await axios.put(`http://localhost:3001/update/question/`, data)
+    await axios.put(`http://localhost:3001/edit/update/question/`, data)
     setRefresh(!refresh)
   }
 
   const putChoice = async (id, value) => {
     const data = {
       id: id,
-      name: value
+      name: value,
+      examid: examid
     }
-    await axios.put(`http://localhost:3001/update/choice/`, data)
+    await axios.put(`http://localhost:3001/edit/update/choice/`, data)
     setRefresh(!refresh)
   }
 
   const putCorrect = async (id, value) => {
     const data = {
       id: id,
-      correct: value
+      correct: value,
+      examid: examid
     }
-    await axios.put(`http://localhost:3001/update/correct/`, data)
+    await axios.put(`http://localhost:3001/edit/update/correct/`, data)
     setRefresh(!refresh)
-  }
+  } 
 
   useEffect(() => {
     getQuestion()
     getChoice()
   }, [refresh, examid])
 
-  console.log('question length: ', question.length)
+  //console.log('question length: ', question.length)
+  
   if (question.length < 1) {
     return <></>
   }
   return (
     <>
       {question.map(q => 
-        <Card key={uuid()} className="kortti"> 
+        <Card className="kortti"> 
           <div className="sulkuNappi">
             <Button onClick={() => deleteQuestion(q.id)} color="secondary" >×</Button>
           </div>
@@ -102,12 +111,12 @@ const QuestionEdit = ({ examid }) => {
             onBlur={ (e) => putQuestion(q.id, e.target.value) } 
           />
           {choice.filter(filtered => (filtered.questionid === q.id && filtered.id !== null)).map(c => 
-            <div key={uuid()}>
+            <div> 
               <Checkbox
-                key={uuid()} 
+                //key={uuid()} 
                 checked={c.correct}
                 style={{ color: green[500] }}
-                id={uuid()}
+                //id={uuid()}
                 name={q.question + " " + q.id} 
                 onChange={ (e) => putCorrect(c.id, e.target.checked) } 
               />
@@ -119,10 +128,10 @@ const QuestionEdit = ({ examid }) => {
               <Button onClick={() => deleteChoice(c.id)} color="secondary" >×</Button>
             </div>
           )}
-          <Button onClick={() => postChoice(q.id)} color="primary" >+</Button>
+          <Button onClick={() => addChoice(q.id)} color="primary" >+</Button>
         </Card>
       )}
-      <><Button onClick={postQuestion} color="primary" >Uusi Kysymys</Button></>
+      <><Button onClick={postQuestion} color="primary" > <FormattedMessage id="question.newquestion" /> </Button></>
     </>
   )  
 } 

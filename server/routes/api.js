@@ -81,7 +81,7 @@ router.put('/newcourse/', (req, res) => {
   })
 })
 
-router.put('/deletecourse/', (req, res) => {
+/* router.put('/deletecourse/', (req, res) => {
   const text = `
     DELETE FROM course 
     WHERE id = $1
@@ -93,7 +93,7 @@ router.put('/deletecourse/', (req, res) => {
     }
     res.status(200).send(`Course deleted with ID: ${req.body.id}`)
   })
-})
+}) */ 
 
 router.put('/joincourse/', (req, res) => {
   const text = `
@@ -120,6 +120,19 @@ router.put('/leavecourse/', (req, res) => {
   })
 })
 
+/* router.put('/deleteexam/', (req, res) => { 
+  const text = `
+    DELETE FROM exam 
+    WHERE id = $1
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).send(`Exam deleted with ID: ${req.body.id}`)
+  })
+}) */
 
 // --- 
 
@@ -239,7 +252,7 @@ router.get('/exam/:exam/answer/:user', (req, res) => {
 })
 
 
-router.delete('/delete/question/:id/', (req, res) => {
+/* router.delete('/delete/question/:id/', (req, res) => {
   let id = parseInt(req.params.id)
 
   db.query('DELETE FROM question WHERE id = $1', [id], (error, results) => {
@@ -340,5 +353,5 @@ router.put('/update/answer/', (req, res) => {
     res.status(201).send(`Correct answer changed to ID: ${result.insertId}`)
   })
 })
-
+*/
 module.exports = router

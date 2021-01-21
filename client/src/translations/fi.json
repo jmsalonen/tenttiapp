@@ -5,5 +5,7 @@
   "header.login": "Kirjaudu",
   "header.register": "Rekisteröidy",
   "header.language": "Vaihda kieli",
+  "exam.remove": "Poista tentti",
+  "question.newquestion": "Uusi kysymys",
   "footer.text": "Tänään on "
 }

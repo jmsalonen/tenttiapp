@@ -60,7 +60,7 @@ const QuestionUser = ({examid, userid}) => {
   }, [refresh, examid])
 
   return (
-    <>
+    <div>
       {question.map(q => 
         <Card key={uuid()} className="kortti"> 
           <div>
@@ -88,7 +88,7 @@ const QuestionUser = ({examid, userid}) => {
         </Card>
       )}
       <><Button onClick={putFinished} variant="contained" color="primary" > Valmis </Button></>
-    </>
+    </div>
   )
 }
 

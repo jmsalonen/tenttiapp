@@ -25,9 +25,9 @@ const Course = ({ token, profile }) => {
   }
 
   useEffect(() => {
-    if (!token)
+    if (!myToken)
       getToken()
-    if (!profile)
+    if (!myProfile)
       getProfile()
   }, [myToken, myProfile])
 
