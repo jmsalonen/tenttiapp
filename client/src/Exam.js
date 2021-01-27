@@ -142,7 +142,6 @@ const Exam = ({ token, profile }) => {
       </div>
       <Switch>
         <Route exact path={path}>
-          {/* {exam.length > 0 ? <Redirect to={`${path}/1`} /> : ""} */}
         </Route>
         <Route path={`${path}/:examid`}> 
         {/* <Route path={`${path}/question`}> */}

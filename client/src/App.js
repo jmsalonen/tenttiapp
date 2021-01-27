@@ -108,7 +108,7 @@ const App = () => {
             <Register register={register} />
           </Route>
           <Route path="/courses">
-            <Course token={token} />
+            <Course token={token} profile={profile} />
           </Route>
           <Route path="/">
             {isLogged ? <Home token={token} profile={profile} /> : <LogIn logIn={logIn} />}

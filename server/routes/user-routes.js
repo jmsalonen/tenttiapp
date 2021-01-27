@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db')
 
-router.get('/profile', (req, res, next) => {
+router.get('/profile', (req, res) => {
   const text = `
     SELECT id, name, email, usertype 
     FROM appuser
@@ -13,14 +13,8 @@ router.get('/profile', (req, res, next) => {
     if (error) {
       throw error
     }
-    //next()
     return res.json(result.rows[0])
   })
-/*   res.json({
-    message: "Secure profile accessed!",
-    user: req.user,
-    token: req.query.secret_token
-  }) */
 }) 
 
 router.put('/course', (req, res) => {

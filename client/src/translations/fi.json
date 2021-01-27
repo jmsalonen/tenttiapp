@@ -9,5 +9,6 @@
   "register.register": "Rekisteröidy",
   "exam.remove": "Poista tentti",
   "question.newquestion": "Uusi kysymys",
+  "question.finished": "Valmis",
   "footer.text": "Tänään on "
 }

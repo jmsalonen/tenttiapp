@@ -7,8 +7,8 @@ const router = express.Router()
 
 
 // --------
-
-/* router.put('/user/profile', (req, res) => {
+/* 
+router.put('/user/profile', (req, res) => {
   const text = `
     SELECT appuser.name AS name, exam.name AS exam, question.name AS question, choice.name AS choice, exam_appuser_choice.answer AS answer, choice.correct AS correct
     FROM appuser 
@@ -29,8 +29,8 @@ const router = express.Router()
     }
     res.send(result.rows)
   }) 
-}) */
-/*
+})
+
 router.get('/user/:id', (req, res) => {
   db.query('SELECT * FROM appuser WHERE id = $1', [req.params.id], (error, result) => {
     if (error) {
@@ -39,7 +39,7 @@ router.get('/user/:id', (req, res) => {
     res.send(result.rows)
   })
 })
-*/
+
 router.get('/users/', (req, res) => {
   db.query('SELECT * FROM appuser', (error, result) => {
     if (error) {
@@ -108,6 +108,6 @@ router.put('/finished/', (req, res) => {
     res.status(201).send(`Correct answer changed to ID: ${result.insertId}`)
   })
 })
-
+ */
 
 module.exports = router

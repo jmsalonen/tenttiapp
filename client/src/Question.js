@@ -29,16 +29,16 @@ const Question = ({ token, profile }) => {
   }
 
   useEffect(() => {
-    if (!token)
+    if (!myToken)
       getToken()
-    if (!profile)
+    if (!myProfile)
       getProfile()
   }, [myToken, myProfile])
   
   return (
     myProfile.usertype === 'teacher' 
     ? <QuestionEdit token={myToken} profile={myProfile} /> 
-    : <QuestionUser examid={examid} userid={myProfile.id} />
+    : <QuestionUser token={myToken} profile={myProfile} examid={examid} userid={myProfile.id} />
   )
 }
 

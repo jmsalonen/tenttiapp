@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import uuid from 'react-uuid'
 import { Button, Card, TextField, Checkbox } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import axios from 'axios'
@@ -7,8 +6,12 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
+import { FormattedMessage } from 'react-intl'
 
-const QuestionUser = ({examid, userid}) => {
+const QuestionUser = ({ token, profile, examid, userid }) => {
+
+  const [myToken, setMyToken] = useState(token)
+  const [myProfile, setMyProfile] = useState(profile)
 
   const [question, setQuestion] = useState([]) 
   const [choice, setChoice] = useState([]) 
@@ -16,7 +19,7 @@ const QuestionUser = ({examid, userid}) => {
   const [answer, setAnswer] = useState([])
   const [refresh, setRefresh] = useState(false)
   
-  const getQuestion = async () => {
+/*   const getQuestion = async () => {
     await axios
       .get(`http://localhost:3001/exam/${examid}/question`)
       .then(response => {
@@ -33,61 +36,108 @@ const QuestionUser = ({examid, userid}) => {
         //console.log(response.data[0])
     })
   }
+*/
 
-  const putAnswer = async (id, value) => {
+const getQuestion = async () => {
+  const data = {
+    id: examid
+  }
+  await axios
+    .put(`http://localhost:3001/user/teacher/get/question`, data, {
+      headers: {
+        'authorization': `${myToken}`
+      }
+    })
+    .then(response => {
+      setQuestion(response.data)
+  })
+}
+
+const getChoice = async () => {
+  const data = {
+    user: userid,
+    exam: examid
+  }
+  await axios
+    .put(`http://localhost:3001/user/student/get/choice`, data, {
+      headers: {
+        'authorization': `${myToken}`
+      }
+    })
+    .then(response => {
+      setChoice(response.data)
+      setFinished(response.data[0].finished)
+  })
+}
+
+  const updateAnswer = async (id, value) => {
     const data = {
       exam: examid,
       user: userid,
       choice: id,
       value: value
     }
-    await axios.put(`http://localhost:3001/update/answer/`, data)
+    await axios.put(`http://localhost:3001/user/student/update/answer/`, data, {
+      headers: {
+        'authorization': `${myToken}`
+      }
+    })
     setRefresh(!refresh)
   }
 
-  const putFinished = async () => {
+  const updateFinished = async () => {
     const data = {
       exam: examid,
       user: userid
     }
-    await axios.put(`http://localhost:3001/finished/`, data)
+    await axios.put(`http://localhost:3001/user/student/finished/`, data, {
+      headers: {
+        'authorization': `${myToken}`
+      }
+    })
     setRefresh(!refresh)
   }
 
   useEffect(() => {
     getQuestion()
     getChoice()
+    console.log(choice)
   }, [refresh, examid])
 
   return (
     <div>
       {question.map(q => 
-        <Card key={uuid()} className="kortti"> 
+        <Card className="kortti"> 
           <div>
             {q.question}
             {/* // if finished then checkicon else blockicon */}
           </div>
           {choice.filter(filtered => (filtered.questionid === q.id && filtered.choiceid !== null)).map(c => 
-            <div key={uuid()}>
+            <div>
               <Checkbox
-                /* checked={c.answer}
+                checked={c.answer}
                 disabled={ finished }
-                id={uuid()} */
                 /* onChange={ (e) => putCorrectChoice(c.choiceid, e.target.checked) }  */
                 checked={c.answer}
                 disabled={ finished }
-                onChange={ (e) => putAnswer(c.choiceid, e.target.checked) } 
+                onChange={ (e) => updateAnswer(c.choiceid, e.target.checked) } 
               />
-              <Checkbox 
-                style={{ color: green[500] }}
-                checked={c.correct}
-              /> 
+              {finished 
+              ? <Checkbox 
+                  style={{ color: green[500] }}
+                  checked={c.correct}
+                /> 
+              : ""}
               <label>{c.name}</label>
             </div>
           )}
         </Card>
       )}
-      <><Button onClick={putFinished} variant="contained" color="primary" > Valmis </Button></>
+      <div>
+        <Button onClick={updateFinished} variant="contained" color="primary" > 
+          <FormattedMessage id="question.finished" /> 
+        </Button>
+      </div>
     </div>
   )
 }

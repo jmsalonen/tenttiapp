@@ -4,12 +4,12 @@ const jwt = require('jsonwebtoken')
 const db = require('../db')
 
 const router = express.Router()
-
+/* 
 router.get('/', (req, res) => {
   res.send('Hello')
 })
 
-/* router.put('/user/profile', (req, res) => {
+router.put('/user/profile', (req, res) => {
   const text = `
     SELECT appuser.name AS name, exam.name AS exam, question.name AS question, choice.name AS choice, exam_appuser_choice.answer AS answer, choice.correct AS correct
     FROM appuser 
@@ -30,16 +30,16 @@ router.get('/', (req, res) => {
     }
     res.send(result.rows)
   })
-}) */
+})
 
-/* router.get('/user/:id', (req, res) => {
+router.get('/user/:id', (req, res) => {
   db.query('SELECT * FROM appuser WHERE id = $1', [req.params.id], (error, result) => {
     if (error) {
       throw error
     }
     res.send(result.rows)
   })
-}) */
+})
 
 router.get('/users/', (req, res) => {
   db.query('SELECT * FROM appuser', (error, result) => {
@@ -51,7 +51,7 @@ router.get('/users/', (req, res) => {
 })
 
 
-/* router.put('/course/exam', (req, res) => {
+router.put('/course/exam', (req, res) => {
   const values = [req.body.user, req.body.course]
   const text = `
     SELECT exam.id AS id, exam.name AS name
@@ -68,7 +68,7 @@ router.get('/users/', (req, res) => {
     }
     res.send(result.rows)
   })
-}) */
+})
 
 router.get('/exam/:id', (req, res) => {
   const text = `
@@ -329,6 +329,6 @@ router.put('/finished/', (req, res) => {
   })
 })
 
-
+ */
 
 module.exports = router

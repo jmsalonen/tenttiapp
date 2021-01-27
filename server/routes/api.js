@@ -104,6 +104,7 @@ router.put('/joincourse/', (req, res) => {
     if (error) {
       throw error
     }
+    res.status(200).send(`joincourse`)
   })
 })
 
@@ -117,6 +118,7 @@ router.put('/leavecourse/', (req, res) => {
     if (error) {
       throw error
     }
+    res.status(200).send(`leavecourse`)
   })
 })
 
@@ -135,7 +137,7 @@ router.put('/leavecourse/', (req, res) => {
 }) */
 
 // --- 
-
+/* 
 router.put('/course/exam', (req, res) => {
   const values = [req.body.user, req.body.course]
   const text = `
@@ -250,7 +252,7 @@ router.get('/exam/:exam/answer/:user', (req, res) => {
     res.send(result.rows)
   })
 })
-
+ */
 
 /* router.delete('/delete/question/:id/', (req, res) => {
   let id = parseInt(req.params.id)

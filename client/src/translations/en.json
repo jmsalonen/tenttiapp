@@ -9,5 +9,6 @@
   "register.register": "Register",
   "exam.remove": "Remove exam",
   "question.newquestion": "New question",
+  "question.finished": "Finished",
   "footer.text": "Today is "
 }

@@ -13,7 +13,7 @@ const Course = ({ token, profile }) => {
   }
 
   const getProfile = async () => {
-    axios
+    await axios
       .get(`http://localhost:3001/user/profile`, {
         headers: {
           'authorization': `${myToken}`

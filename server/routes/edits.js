@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db')
 
-router.put('/deletecourse/', (req, res, next) => {
+/* router.put('/deletecourse/', (req, res, next) => {
   const text = `
     DELETE FROM course 
     WHERE id = $1
@@ -161,6 +161,6 @@ router.put('/update/answer/', (req, res, next) => {
   })
   next()
 })
-
+ */
 
 module.exports = router

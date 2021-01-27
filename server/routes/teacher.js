@@ -79,7 +79,7 @@ router.put('/delete/exam/', (req, res) => {
 }) 
 
 //router.get('/exam/:id/question', (req, res) => {
-router.put('/get/question', (req, res) => { // /get/question/
+router.put('/get/question', (req, res) => { 
   const text = `
     SELECT question.id AS id, question.name AS question
     FROM exam
@@ -100,7 +100,7 @@ router.put('/get/question', (req, res) => { // /get/question/
 }) 
 
 //router.get('/exam/:id/choice/', (req, res) => {
-router.put('/get/choice', (req, res) => { // /get/choice/
+router.put('/get/choice', (req, res) => { 
   const text = `
     SELECT choice.id AS id, question.id AS questionid, choice.name AS choice, choice.correct AS correct
     FROM exam
