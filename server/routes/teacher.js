@@ -79,7 +79,7 @@ router.put('/delete/exam/', (req, res) => {
 }) 
 
 //router.get('/exam/:id/question', (req, res) => {
-router.put('/question', (req, res) => {
+router.put('/get/question', (req, res) => { // /get/question/
   const text = `
     SELECT question.id AS id, question.name AS question
     FROM exam
@@ -100,7 +100,7 @@ router.put('/question', (req, res) => {
 }) 
 
 //router.get('/exam/:id/choice/', (req, res) => {
-router.put('/choice', (req, res) => {
+router.put('/get/choice', (req, res) => { // /get/choice/
   const text = `
     SELECT choice.id AS id, question.id AS questionid, choice.name AS choice, choice.correct AS correct
     FROM exam
@@ -118,6 +118,19 @@ router.put('/choice', (req, res) => {
   })
 })
 
+router.put('/add/question/', (req, res) => {
+  const text = `
+    INSERT INTO question VALUES (DEFAULT, $1, \'\')
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`New question added`)
+  })
+}) 
+
 router.put('/delete/question/', (req, res) => {
   const text = `
     DELETE FROM question
@@ -128,8 +141,96 @@ router.put('/delete/question/', (req, res) => {
     if (error) {
       throw error
     }
-    res.status(200).send(`Course deleted with ID: ${req.body.id}`)
+    res.status(200).send(`Question deleted with ID: ${req.body.id}`)
   })
 }) 
+
+router.put('/add/choice/', (req, res) => {
+  const text = `
+    INSERT INTO choice VALUES (DEFAULT, $1, \'\', false)
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`New choice added!`)
+  })
+})
+
+router.put('/delete/choice/', (req, res) => {
+  const text = `
+    DELETE FROM choice
+    WHERE id = $1
+  `
+  const values = [req.body.id]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).send(`Choice deleted with ID: ${req.body.id}`)
+  })
+})
+
+router.put('/update/question/', (req, res) => {
+  const text = `
+    UPDATE question
+    SET name = $2
+    WHERE id = $1
+  `
+  const values = [req.body.id, req.body.name]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`Question updated!`)
+  })
+})
+
+router.put('/update/choice/', (req, res) => {
+  const text = `
+    UPDATE choice
+    SET name = $2
+    WHERE id = $1
+  `
+  const values = [req.body.id, req.body.name]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`Choice updated!`)
+  })
+}) 
+
+router.put('/update/correct/', (req, res) => {
+  const text = `
+    UPDATE choice
+    SET correct = $2
+    WHERE id = $1
+  `
+  const values = [req.body.id, req.body.correct]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`Correct answer updated!`)
+  })
+})
+
+router.put('/update/exam/', (req, res) => {
+  const text = `
+    UPDATE exam
+    SET name = $2
+    WHERE id = $1
+  `
+  const values = [req.body.id, req.body.name]
+  db.query(text, values, (error, result) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`Exam updated!`)
+  })
+}) 
+
 
 module.exports = router

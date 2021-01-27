@@ -116,7 +116,6 @@ router.put('/update/choice/', (req, res, next) => {
     WHERE id = $1
   `
   const values = [req.body.id, req.body.name]
-
   db.query(text, values, (error, result) => {
     if (error) {
       throw error
@@ -132,7 +131,7 @@ router.put('/update/choice/', (req, res, next) => {
   next()
 })
 
-router.put('/update/correct/', (req, res, next) => {
+router.put('/update/correct/', (req, res) => {
   const text = `
     UPDATE choice
     SET correct = $2
@@ -143,14 +142,8 @@ router.put('/update/correct/', (req, res, next) => {
     if (error) {
       throw error
     }
-    res.status(201).send(`Correct answer changed to ID: ${result.insertId}`)
+    res.status(201).send(`Correct answer updated!`)
   })
-  req.data = {
-    type: "edit", 
-    message: `Exam ID:${req.body.examid} has been edited`,
-    examid: req.body.examid
-  }
-  next()
 })
 
 router.put('/update/answer/', (req, res, next) => {

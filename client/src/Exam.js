@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button } from '@material-ui/core'
+import { Button, TextField } from '@material-ui/core'
 import axios from 'axios'
 import {
   Switch,
@@ -52,8 +52,9 @@ const Exam = ({ token, profile }) => {
         }
       })
       .then(response => {
-        setExam(response.data)
-    })
+        if (response.data[0].id != null)
+          setExam(response.data)
+      })
   }
 
   const addExam = async () => {
@@ -76,10 +77,30 @@ const Exam = ({ token, profile }) => {
     const data = {
       id: examId
     }
-    await axios.put(`http://localhost:3001/user/teacher/delete/exam`, data, {
+    await axios
+      .put(`http://localhost:3001/user/teacher/delete/exam`, data, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
+      .then(response => {
+        setExamId(null)
+        setRefresh(!refresh)
+      })
+  }
+
+  const updateExam = async (id, value) => {
+    const data = {
+      id: id,
+      name: value
+    }
+    await axios.put(`http://localhost:3001/user/teacher/update/exam/`, data, {
       headers: {
         'authorization': `${myToken}`
       }
+    })
+    .then(response => {
+      setRefresh(!refresh)
     })
   }
 
@@ -88,28 +109,35 @@ const Exam = ({ token, profile }) => {
       getToken()
     if (!myProfile)
       getProfile()
-    if (myProfile)
-      getExam()
+    getExam()
   }, [myToken, myProfile, refresh])
 
   useEffect(() => {
     getExam()
+    console.log("exam.length", exam.length)
+    console.log("exam.length", exam.length)
   }, [examId, courseid])
 
-  if (!myProfile) 
-    return <>.</>
   return (
     <div className="Tenttilista">
       <div>
-        {exam.map((item, index) =>  
-          <Button
-            //key={uuid()} 
-            component={Link} 
-            to={`${url}/${item.id}`}
-            onClick={() => (setExamId(item.id))}
-            color="primary">
-              {item.name}
-          </Button>)}
+        {exam.length > 0 
+          ? exam.map((item, index) =>  
+            <Button
+              //key={uuid()} 
+              component={Link} 
+              to={`${url}/${item.id}`}
+              onClick={() => (setExamId(item.id))}
+              color="primary">
+                {(myProfile.usertype === 'teacher' && exam.length > 0)
+                ? <TextField 
+                    defaultValue={item.name}
+                    style={ {width: '90%'} }
+                    onBlur={ (e) => updateExam(item.id, e.target.value) } 
+                  /> 
+                : item.name}
+            </Button>) 
+          : ""}
         {myProfile.usertype === "teacher" ? <Button onClick={() => {addExam()}} color="primary" > + </Button> : ""}
       </div>
       <Switch>
@@ -121,7 +149,13 @@ const Exam = ({ token, profile }) => {
           <Question token={myToken} profile={myProfile} />
         </Route>
       </Switch>
-      {myProfile.usertype === "teacher" ? <div className="sulkuNappi"><Button component={Link} to="/exam" onClick={deleteExam} color="secondary" > <FormattedMessage id="exam.remove" /> </Button> </div> : ""}
+      {(myProfile.usertype === "teacher" && examId) 
+      ? <div className="sulkuNappi">
+          <Button component={Link} to={`${url}`} onClick={deleteExam} color="secondary" > 
+            <FormattedMessage id="exam.remove" /> 
+          </Button> 
+        </div> 
+      : ""}
     </div>
   )
   

@@ -1,10 +1,10 @@
 {
   "header.home": "Koti",
-  "header.courses": "Kurssit",
+  "header.courses": "Kurssitarjonta",
   "header.logout": "Poistu",
   "header.login": "Kirjautuminen",
   "header.register": "Rekisteröinti",
-  "header.language": "Vaihda kieli",
+  "header.language": "🇬🇧",
   "login.login": "Kirjaudu sisään",
   "register.register": "Rekisteröidy",
   "exam.remove": "Poista tentti",
