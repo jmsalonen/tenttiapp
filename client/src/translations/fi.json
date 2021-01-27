@@ -2,9 +2,11 @@
   "header.home": "Koti",
   "header.courses": "Kurssit",
   "header.logout": "Poistu",
-  "header.login": "Kirjaudu",
-  "header.register": "Rekisteröidy",
+  "header.login": "Kirjautuminen",
+  "header.register": "Rekisteröinti",
   "header.language": "Vaihda kieli",
+  "login.login": "Kirjaudu sisään",
+  "register.register": "Rekisteröidy",
   "exam.remove": "Poista tentti",
   "question.newquestion": "Uusi kysymys",
   "footer.text": "Tänään on "

@@ -3,11 +3,13 @@ import axios from 'axios'
 
 import QuestionEdit from './QuestionEdit.js'
 import QuestionUser from './QuestionUser.js'
+import { useParams } from 'react-router-dom'
 
-const Question = ({ token, profile, examid }) => {
+const Question = ({ token, profile }) => {
   const [myToken, setMyToken] = useState(token)
   const [myProfile, setMyProfile] = useState(profile)
-  const [examId, setExamId] = useState(examid)
+//  const [examId, setExamId] = useState(examid)
+  const { examid } = useParams()
 
 
   const getToken = async () => {
@@ -31,14 +33,12 @@ const Question = ({ token, profile, examid }) => {
       getToken()
     if (!profile)
       getProfile()
-    if (!examId)
-      setExamId(localStorage.getItem('exam'))
   }, [myToken, myProfile])
   
   return (
     myProfile.usertype === 'teacher' 
-    ? <QuestionEdit examid={examId} /> 
-    : <QuestionUser examid={examId} userid={myProfile.id} />
+    ? <QuestionEdit token={myToken} profile={myProfile} /> 
+    : <QuestionUser examid={examid} userid={myProfile.id} />
   )
 }
 

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button, TextField, Card } from '@material-ui/core'
+import { FormattedMessage } from 'react-intl'
 
 const LogIn = ({ logIn }) => {
   const [userEmail, setUserEmail] = useState()
@@ -15,7 +16,7 @@ const LogIn = ({ logIn }) => {
           <TextField label={'password'} onChange={(e) => setUserPassword(e.target.value)} /> 
         </div>
         <div>
-          <Button onClick={() => logIn(userEmail, userPassword)}>Kirjaudu Sisään</Button>
+          <Button onClick={() => logIn(userEmail, userPassword)}> <FormattedMessage id="login.login" /> </Button>
         </div>
       </Card>
     </div>

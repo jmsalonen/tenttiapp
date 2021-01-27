@@ -7,7 +7,7 @@ const router = express.Router()
 
 
 
-router.put('/mycourse/', (req, res) => {
+/* router.put('/mycourse/', (req, res) => {
   const text = `
     SELECT course.id AS id, course.name AS name
     FROM course
@@ -21,7 +21,7 @@ router.put('/mycourse/', (req, res) => {
     }
     res.send(result.rows)
   })
-})
+}) */    
 
 router.put('/othercourse/', (req, res) => {
   const text = `
@@ -57,7 +57,7 @@ router.put('/course/', (req, res) => {
   })
 })
 
-router.put('/newcourse/', (req, res) => {
+/* router.put('/newcourse/', (req, res) => {
   let text = `
     INSERT INTO course VALUES (DEFAULT, $1) RETURNING id
   `
@@ -79,7 +79,7 @@ router.put('/newcourse/', (req, res) => {
       console.log(result.rows)
     })
   })
-})
+}) */
 
 /* router.put('/deletecourse/', (req, res) => {
   const text = `

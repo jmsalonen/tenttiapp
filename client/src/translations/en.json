@@ -5,6 +5,8 @@
   "header.login": "Log in",
   "header.register": "Register",
   "header.language": "Change language",
+  "login.login": "Log in",
+  "register.register": "Register",
   "exam.remove": "Remove exam",
   "question.newquestion": "New question",
   "footer.text": "Today is "

@@ -6,14 +6,14 @@ import axios from 'axios'
 const Home = ({ token, profile }) => {
   const [myToken, setMyToken] = useState(token)
   const [myProfile, setMyProfile] = useState(profile)
-  const [myCourse, setMyCourse] = useState([])
+  const [course, setCourse] = useState([]) 
   
   const getToken = async () => {
     setMyToken(localStorage.getItem('token'))
   }
 
   const getProfile = async () => {
-    axios
+    await axios
       .get(`http://localhost:3001/user/profile`, {
         headers: {
           'authorization': `${myToken}`
@@ -25,14 +25,18 @@ const Home = ({ token, profile }) => {
     })
   }
 
-  const getMyCourse = async () => {
+  const getCourse = async () => {
     const data = {
       id: myProfile.id
     }
     await axios
-      .put(`http://localhost:3001/mycourse`, data)
+      .put(`http://localhost:3001/user/course`, data, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
       .then(response => {
-        setMyCourse(response.data)
+        setCourse(response.data)
     })
   }
 
@@ -42,11 +46,12 @@ const Home = ({ token, profile }) => {
     if (!myProfile)
       getProfile()
     if (myProfile)
-      getMyCourse()
+      getCourse()
   }, [myToken, myProfile])
 
   const pickCourse = (courseId) => {
     localStorage.setItem('course', courseId)
+    localStorage.removeItem('exam')
     console.log('picked', courseId)
   }
 
@@ -61,8 +66,8 @@ const Home = ({ token, profile }) => {
           {myProfile.id} | {myProfile.name} | {myProfile.email} | {myProfile.usertype} <br />
         </div>
         <div>
-        {myCourse.map(item => <div>
-          <Button component={Link} to="/exam" onClick={() => pickCourse(item.id)}> {item.name} </Button>
+        {course.map(item => <div>
+          <Button component={Link} to={`course/${item.id}/exam`} onClick={() => pickCourse(item.id)}> {item.name} </Button>
         </div>)}
         </div>
       </Card>

@@ -89,7 +89,7 @@ router.delete('/delete/choice/:id/', (req, res, next) => {
   next()
 })
 
-router.put('/edit/add/choice/', (req, res, next) => {
+router.put('/add/choice/', (req, res, next) => {
 const text = `
   INSERT INTO choice VALUES (DEFAULT, $1, \'\', false)
 `

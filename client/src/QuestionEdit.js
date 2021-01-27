@@ -9,26 +9,61 @@ import {
 } from "react-router-dom"
 import { FormattedMessage } from 'react-intl'
 
-const QuestionEdit = ({ examid }) => {
+const QuestionEdit = ({ token, profile }) => {
+
+  const [myToken, setMyToken] = useState(token)
+  const [myProfile, setMyProfile] = useState(profile)
 
   useRouteMatch()
-  //const { examid } = useParams()
+  const { examid } = useParams()
 
   const [question, setQuestion] = useState([]) 
   const [choice, setChoice] = useState([]) 
   const [refresh, setRefresh] = useState(false)
 
-  const getQuestion = async () => {
+  const getToken = async () => {
+    setMyToken(localStorage.getItem('token'))
+  }
+
+  const getProfile = async () => {
     await axios
-      .get(`http://localhost:3001/exam/${examid}/question`)
+      .get(`http://localhost:3001/user/profile`, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
+      .then(response => {
+        setMyProfile(response.data)
+    })
+  }
+
+
+
+  const getQuestion = async () => {
+    const data = {
+      id: examid
+    }
+    await axios
+      .put(`http://localhost:3001/user/teacher/question`, data, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
       .then(response => {
         setQuestion(response.data)
     })
   }
 
   const getChoice = async () => {
+    const data = {
+      id: examid
+    }
     await axios
-      .get(`http://localhost:3001/exam/${examid}/choice`)
+      .put(`http://localhost:3001/user/teacher/choice`, data, {
+        headers: {
+          'authorization': `${myToken}`
+        }
+      })
       .then(response => {
         setChoice(response.data)
     })
@@ -87,10 +122,17 @@ const QuestionEdit = ({ examid }) => {
     await axios.put(`http://localhost:3001/edit/update/correct/`, data)
     setRefresh(!refresh)
   } 
+  useEffect(() => {
+    getToken()
+    getProfile()
+  }, [])
 
   useEffect(() => {
+    getToken()
+    getProfile()
     getQuestion()
     getChoice()
+    console.log(examid)
   }, [refresh, examid])
 
   //console.log('question length: ', question.length)

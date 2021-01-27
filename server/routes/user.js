@@ -8,7 +8,7 @@ const router = express.Router()
 
 // --------
 
-router.put('/user/profile', (req, res) => {
+/* router.put('/user/profile', (req, res) => {
   const text = `
     SELECT appuser.name AS name, exam.name AS exam, question.name AS question, choice.name AS choice, exam_appuser_choice.answer AS answer, choice.correct AS correct
     FROM appuser 
@@ -29,7 +29,7 @@ router.put('/user/profile', (req, res) => {
     }
     res.send(result.rows)
   }) 
-})
+}) */
 /*
 router.get('/user/:id', (req, res) => {
   db.query('SELECT * FROM appuser WHERE id = $1', [req.params.id], (error, result) => {

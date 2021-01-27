@@ -15,7 +15,6 @@ import Home from './Home.js'
 import Register from './Register.js'
 import Course from './Course.js'
 import Footer from './Footer.js'
-import Dropzone from './Dropzone.js'
 
 import { IntlProvider } from "react-intl";
 import messages_fi from "./translations/fi.json";
@@ -25,8 +24,6 @@ const messages = {
   'fi': messages_fi,
   'en': messages_en
 }
-
-const ws = new WebSocket("ws://localhost:3002")
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'))
@@ -47,8 +44,7 @@ const App = () => {
       })
       .then(response => {
         setProfile(response.data)
-        localStorage.setItem('profile', JSON.stringify(response.data))
-        console.log(response.data)
+        localStorage.setItem('profile', JSON.stringify(response.data)) // -- 
     })
   }
 
@@ -62,17 +58,25 @@ const App = () => {
       .then(response => {
         setToken(response.data.token)
         localStorage.setItem('token', response.data.token)
-        getProfile()
-        ws.send(JSON.stringify({ type: 'login', message: `User ${userEmail} logged in!` }))
       })
       .catch(() => {
         console.log('Log in Error')
       })
   }
 
+  const register = async (userName, userEmail, userPassword, userType) => {
+    const data = {
+      name: userName,
+      email: userEmail,
+      password: userPassword,
+      usertype: userType
+    }
+    await axios.post(`http://localhost:3001/register`, data)
+  }
+
   const logOut = async () => {
     localStorage.removeItem('token')
-    localStorage.removeItem('profile')
+    localStorage.removeItem('profile') // -- 
     localStorage.removeItem('course')
     localStorage.removeItem('exam')
     setToken(null)
@@ -81,29 +85,6 @@ const App = () => {
   }
 
   useEffect(() => {
-    const myProfile = JSON.parse(localStorage.getItem('profile'))
-    console.log(myProfile)
-    ws.onopen = (e) => {
-      console.log("WS opened")
-    }
-    ws.onclose = (e) => {
-      console.log("WS closed")
-    }
-    ws.onmessage = (e) => {
-      if (myProfile) {
-        const data = JSON.parse(e.data)
-        if (data.type == 'login' && myProfile.usertype == 'teacher') 
-          alert(data.message)
-        else if (data.type == 'edit' && myProfile.usertype == 'student')
-          alert(data.message)
-        else if (data.type == 'all')
-          alert(data.message)
-      }
-      else {
-        console.log('no profile')
-      }
-    }
-    
     if (token === null) {
       setIsLogged(false)
     }
@@ -117,20 +98,17 @@ const App = () => {
 
   return (
     <Router>
-      <IntlProvider messages={messages[language]}>
-        <Header token={token} logOut={logOut} changeLanguage={changeLanguage} websocket={ws} />
+      <IntlProvider locale='fi' messages={messages[language]}>
+        <Header token={token} logOut={logOut} changeLanguage={changeLanguage} />
         <Switch>
-          <Route path="/exam">
+          <Route path="/course/:courseid/exam">
             <Exam token={token} profile={profile} />
           </Route>
           <Route path="/register">
-            <Register />
+            <Register register={register} />
           </Route>
-          <Route path="/course">
+          <Route path="/courses">
             <Course token={token} />
-          </Route>
-          <Route path="/dropzone">
-            <Dropzone />
           </Route>
           <Route path="/">
             {isLogged ? <Home token={token} profile={profile} /> : <LogIn logIn={logIn} />}
