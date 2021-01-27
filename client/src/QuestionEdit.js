@@ -172,15 +172,12 @@ const QuestionEdit = ({ token, profile }) => {
     getProfile()
     getQuestion()
     getChoice()
-    console.log(examid)
   }, [refresh, examid])
 
-  //console.log('question length: ', question.length)
-  
   return (
     <>
-      {question.map(q => 
-        <Card className="kortti"> 
+      {question.map((q, index) => 
+        <Card className="kortti" key={`questioncard${index}`}> 
           <div className="sulkuNappi">
             <Button onClick={() => deleteQuestion(q.id)} color="secondary" >×</Button>
           </div>
@@ -189,8 +186,8 @@ const QuestionEdit = ({ token, profile }) => {
             style={ {width: '90%'} }
             onBlur={ (e) => updateQuestion(q.id, e.target.value) } 
           />
-          {choice.filter(filtered => (filtered.questionid === q.id && filtered.id !== null)).map(c => 
-            <div> 
+          {choice.filter(filtered => (filtered.questionid === q.id && filtered.id !== null)).map((c, index) => 
+            <div key={`choiceboxes${index}`}> 
               <Checkbox
                 checked={c.correct}
                 style={{ color: green[500] }}

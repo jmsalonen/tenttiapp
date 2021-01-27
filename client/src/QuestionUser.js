@@ -16,27 +16,7 @@ const QuestionUser = ({ token, profile, examid, userid }) => {
   const [question, setQuestion] = useState([]) 
   const [choice, setChoice] = useState([]) 
   const [finished, setFinished] = useState(false)
-  const [answer, setAnswer] = useState([])
   const [refresh, setRefresh] = useState(false)
-  
-/*   const getQuestion = async () => {
-    await axios
-      .get(`http://localhost:3001/exam/${examid}/question`)
-      .then(response => {
-        setQuestion(response.data)
-    })
-  }
-
-  const getChoice = async () => {
-    await axios
-      .get(`http://localhost:3001/exam/${examid}/answer/${userid}`)
-      .then(response => {
-        setChoice(response.data)
-        //setFinished(response.data[0].finished)
-        //console.log(response.data[0])
-    })
-  }
-*/
 
 const getQuestion = async () => {
   const data = {
@@ -101,19 +81,18 @@ const getChoice = async () => {
   useEffect(() => {
     getQuestion()
     getChoice()
-    console.log(choice)
   }, [refresh, examid])
 
   return (
     <div>
-      {question.map(q => 
-        <Card className="kortti"> 
+      {question.map((q, index) => 
+        <Card className="kortti" key={`questioncard${index}`}> 
           <div>
             {q.question}
             {/* // if finished then checkicon else blockicon */}
           </div>
-          {choice.filter(filtered => (filtered.questionid === q.id && filtered.choiceid !== null)).map(c => 
-            <div>
+          {choice.filter(filtered => (filtered.questionid === q.id && filtered.choiceid !== null)).map((c, index) => 
+            <div key={`checkboxdivi${index}`}>
               <Checkbox
                 checked={c.answer}
                 disabled={ finished }

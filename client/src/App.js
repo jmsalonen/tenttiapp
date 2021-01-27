@@ -60,7 +60,7 @@ const App = () => {
         localStorage.setItem('token', response.data.token)
       })
       .catch(() => {
-        console.log('Log in Error')
+        console.error('Log in Error')
       })
   }
 

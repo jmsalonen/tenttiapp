@@ -31,7 +31,7 @@ const Course = ({ token, profile }) => {
       getProfile()
   }, [myToken, myProfile])
 
-  if (myProfile === undefined)
+  if (!myProfile)
     return <></>
 
   return (

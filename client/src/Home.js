@@ -49,12 +49,6 @@ const Home = ({ token, profile }) => {
       getCourse()
   }, [myToken, myProfile])
 
-  const pickCourse = (courseId) => {
-    localStorage.setItem('course', courseId)
-    localStorage.removeItem('exam')
-    console.log('picked', courseId)
-  }
-
   if (!myProfile)
     return <></>
   if (!myProfile.id)
@@ -66,8 +60,8 @@ const Home = ({ token, profile }) => {
           {myProfile.id} | {myProfile.name} | {myProfile.email} | {myProfile.usertype} <br />
         </div>
         <div>
-        {course.map(item => <div>
-          <Button component={Link} to={`course/${item.id}/exam`} onClick={() => pickCourse(item.id)}> {item.name} </Button>
+        {course.map((item, index) => <div key={`homebutton${index}`}>
+          <Button component={Link} to={`course/${item.id}/exam`} > {item.name} </Button>
         </div>)}
         </div>
       </Card>

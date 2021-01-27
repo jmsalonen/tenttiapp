@@ -7,22 +7,27 @@ router.put('/new/course/', (req, res) => {
     INSERT INTO course VALUES (DEFAULT, $1) RETURNING id
   `
   let values = [req.body.name]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    let newCourseId = result.rows[0].id
-    text = `
-      INSERT INTO appuser_course VALUES ($1, $2) RETURNING *
-    `
-    values = [req.body.id, newCourseId] 
+  try {
     db.query(text, values, (error, result) => {
       if (error) {
         throw error
       }
-      console.log(result.rows)
+      let newCourseId = result.rows[0].id
+      text = `
+        INSERT INTO appuser_course VALUES ($1, $2) RETURNING *
+      `
+      values = [req.body.id, newCourseId] 
+      db.query(text, values, (error, result) => {
+        if (error) {
+          throw error
+        }
+      })
     })
-  })
+    res.status(200).send(`new course`)
+  }
+  catch {
+    res.send(err)
+  }
 })
 
 router.put('/delete/course/', (req, res) => {
@@ -31,36 +36,46 @@ router.put('/delete/course/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).send(`Course deleted with ID: ${req.body.id}`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(200).send(`Course deleted with ID: ${req.body.id}`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 // ykköne pois - topic
 router.put('/new/exam/', (req, res) => {
   let text = `
-    INSERT INTO exam VALUES (DEFAULT, 'default-value', 1, $1) RETURNING id
+    INSERT INTO exam VALUES (DEFAULT, 'name', $1) RETURNING id
   `
   let values = [req.body.user]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    let newExamId = result.rows[0].id
-    text = `
-      INSERT INTO course_exam VALUES ($1, $2) RETURNING *
-    `
-    values = [req.body.course, newExamId] 
+  try {
     db.query(text, values, (error, result) => {
       if (error) {
         throw error
       }
-      res.status(200).send(`new exam id: ${newExamId}`)
-    })
-  })
+      let newExamId = result.rows[0].id
+      text = `
+        INSERT INTO course_exam VALUES ($1, $2) RETURNING *
+      `
+      values = [req.body.course, newExamId] 
+      db.query(text, values, (error, result) => {
+        if (error) {
+          throw error
+        }
+        res.status(200).send(`new exam id: ${newExamId}`)
+      })
+    })  
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 
@@ -70,15 +85,19 @@ router.put('/delete/exam/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).send(`Course deleted with ID: ${req.body.id}`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(200).send(`Course deleted with ID: ${req.body.id}`)
+    })  
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
-//router.get('/exam/:id/question', (req, res) => {
 router.put('/get/question', (req, res) => { 
   const text = `
     SELECT question.id AS id, question.name AS question
@@ -88,18 +107,22 @@ router.put('/get/question', (req, res) => {
     ORDER BY question.id
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    if (result.rows[0].id === null)
-      res.send([])  
-    else
-      res.send(result.rows)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      if (result.rows[0].id === null)
+        res.send([])  
+      else
+        res.send(result.rows)
+    })  
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
-//router.get('/exam/:id/choice/', (req, res) => {
 router.put('/get/choice', (req, res) => { 
   const text = `
     SELECT choice.id AS id, question.id AS questionid, choice.name AS choice, choice.correct AS correct
@@ -110,12 +133,17 @@ router.put('/get/choice', (req, res) => {
     ORDER BY choice.id
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.send(result.rows)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.send(result.rows)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 })
 
 router.put('/add/question/', (req, res) => {
@@ -123,12 +151,17 @@ router.put('/add/question/', (req, res) => {
     INSERT INTO question VALUES (DEFAULT, $1, \'\')
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`New question added`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`New question added`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 router.put('/delete/question/', (req, res) => {
@@ -137,12 +170,17 @@ router.put('/delete/question/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).send(`Question deleted with ID: ${req.body.id}`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(200).send(`Question deleted with ID: ${req.body.id}`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 router.put('/add/choice/', (req, res) => {
@@ -150,12 +188,17 @@ router.put('/add/choice/', (req, res) => {
     INSERT INTO choice VALUES (DEFAULT, $1, \'\', false)
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`New choice added!`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`New choice added!`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 })
 
 router.put('/delete/choice/', (req, res) => {
@@ -164,12 +207,17 @@ router.put('/delete/choice/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(200).send(`Choice deleted with ID: ${req.body.id}`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(200).send(`Choice deleted with ID: ${req.body.id}`)
+    })  
+  }
+  catch (err) {
+    res.send(err)
+  }
 })
 
 router.put('/update/question/', (req, res) => {
@@ -179,12 +227,17 @@ router.put('/update/question/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id, req.body.name]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`Question updated!`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`Question updated!`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 })
 
 router.put('/update/choice/', (req, res) => {
@@ -194,12 +247,17 @@ router.put('/update/choice/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id, req.body.name]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`Choice updated!`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`Choice updated!`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 router.put('/update/correct/', (req, res) => {
@@ -209,12 +267,17 @@ router.put('/update/correct/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id, req.body.correct]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`Correct answer updated!`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`Correct answer updated!`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 })
 
 router.put('/update/exam/', (req, res) => {
@@ -224,12 +287,17 @@ router.put('/update/exam/', (req, res) => {
     WHERE id = $1
   `
   const values = [req.body.id, req.body.name]
-  db.query(text, values, (error, result) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`Exam updated!`)
-  })
+  try {
+    db.query(text, values, (error, result) => {
+      if (error) {
+        throw error
+      }
+      res.status(201).send(`Exam updated!`)
+    })
+  }
+  catch (err) {
+    res.send(err)
+  }
 }) 
 
 

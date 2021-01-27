@@ -58,7 +58,6 @@ const CourseUser = ({ token, profile }) => {
   }
 
   const joinCourse = async (courseId) => {
-    console.log("join")
     const data = {
       userid: profile.id,
       courseid: courseId
@@ -72,7 +71,6 @@ const CourseUser = ({ token, profile }) => {
   }
 
   const leaveCourse = async (courseId) => {
-    console.log("leave")
     const data = {
       userid: profile.id,
       courseid: courseId

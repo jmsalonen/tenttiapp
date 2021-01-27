@@ -28,10 +28,9 @@ const Users = ({ tokenSet }) => {
       .post(`http://localhost:3001/login`, data)
       .then(response => {
         tokenSet(response.data.token)
-        /* console.log(localStorage.getItem('token')) */
       })
       .catch(() => {
-        console.log('Log in Error')
+        console.error('Log in Error')
       })
   }
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import uuid from 'react-uuid'
 import { Button, TextField, Card } from '@material-ui/core'
 import axios from 'axios'
 
@@ -63,7 +62,6 @@ const CourseEdit = ({ token, profile }) => {
     const data = {
       id: courseId
     }
-    console.log(courseId)
     await axios.put(`http://localhost:3001/user/teacher/delete/course`, data, {
       headers: {
         'authorization': `${myToken}`
@@ -86,15 +84,11 @@ const CourseEdit = ({ token, profile }) => {
       getCourse()
   }, [myToken, myProfile, refresh])
 
-  const pickCourse =   () => {
-    console.log("picked")
-  }
-
   return (
     <div className="Tenttilista">
       <Card className="kortti">
-        {course.map(item => <div>
-          <Button onClick={pickCourse}> {item.name} </Button>
+        {course.map((item, index) => <div key={`coursediv${index}`}>
+          <Button> {item.name} </Button>
           <Button onClick={() => deleteCourse(item.id)} color="secondary" > × </Button>
         </div>)}
         <div>
